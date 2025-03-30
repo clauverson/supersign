@@ -3,10 +3,11 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import emptyUser from '../../../public/empty-user.svg'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export function DropdownMenu() {
+  const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
@@ -25,7 +26,7 @@ export function DropdownMenu() {
         onClick={toggleDropdown}
         className="cursor-pointer flex items-center gap-2"
       >
-        <p className="">Nome do usuário</p>
+        <p className="">{session?.user.name}</p>
         <Image
           draggable={false}
           src={emptyUser}

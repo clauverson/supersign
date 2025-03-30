@@ -46,10 +46,7 @@ export default function RootLayout({
                 <a href="/home">Dashboard</a>
               </li>
               <li>
-                <a href="/analytics">Analytics</a>
-              </li>
-              <li>
-                <a href="/settings">Settings</a>
+                <a href="/documents/all">Documentos</a>
               </li>
             </ul>
           </nav>

@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
 
-const prisma = new PrismaClient()
+export const prisma = new PrismaClient()
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
@@ -13,7 +13,7 @@ declare module 'next-auth' {
   }
 }
 
-const handler = NextAuth({
+export const authOptions = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -39,11 +39,17 @@ const handler = NextAuth({
   ],
   session: { strategy: 'jwt' },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id
+      }
+      return token
+    },
     async session({ session, token }) {
-      session.user.id = token.sub!
+      session.user.id = token.sub as string
       return session
     },
   },
 })
 
-export { handler as GET, handler as POST }
+export { authOptions as GET, authOptions as POST }

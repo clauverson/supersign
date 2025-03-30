@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { NextResponse } from 'next/server'
-
-const prisma = new PrismaClient()
+import { prisma } from '../[...nextauth]/route'
 
 export async function POST(req: Request) {
   const { name, email, password } = await req.json()
