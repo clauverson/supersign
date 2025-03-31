@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/Input'
@@ -42,6 +41,7 @@ export default function LoginPage() {
             type="email"
             placeholder="Informe seu email"
             value={form.values.email}
+            name="email"
             onChange={form.handleChange}
           />
         </div>
@@ -51,6 +51,7 @@ export default function LoginPage() {
           <Input
             type="password"
             placeholder="Digite sua senha"
+            name="password"
             value={form.values.password}
             onChange={form.handleChange}
           />

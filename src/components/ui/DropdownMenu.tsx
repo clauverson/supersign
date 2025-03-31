@@ -36,13 +36,15 @@ export function DropdownMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 min-w-48 bg-white border border-gray-200 shadow-lg rounded-md">
+        <div className="absolute right-0 mt-1 min-w-48 bg-white border border-gray-200 shadow-lg rounded-md">
           <ul className="py-2">
-            <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
-              Item 1
-            </li>
-            <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
-              Item 2
+            <li
+              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+              onClick={() => {
+                router.push('/documents/all')
+              }}
+            >
+              Documentos
             </li>
             <li
               className="cursor-pointer px-4 py-2 hover:bg-gray-100"
