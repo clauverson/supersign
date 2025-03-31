@@ -5,15 +5,32 @@ import { useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import { Eraser, Mail, Signature, User } from 'lucide-react'
 import { twMerge } from 'tailwind-merge'
+import { DocumentService } from '@/services/documents'
+import { useModal } from '@/hooks/modal.store'
 
-export function MySignaturePad() {
+interface Props {
+  readonly email: string
+  readonly documentId: string
+}
+
+export function MySignaturePad(props: Props) {
   const sigCanvas = useRef<SignatureCanvas>(null)
   const { data: session } = useSession()
+  const { toggleModal } = useModal()
 
   const clearSignature = () => sigCanvas.current?.clear()
   const saveSignature = () => {
     const signatureData = sigCanvas.current?.toDataURL()
-    console.log(signatureData)
+    if (!signatureData) return
+
+    DocumentService.saveSignature(props.documentId, props.email, signatureData)
+      .then(() => {
+        sigCanvas.current?.clear()
+        toggleModal()
+      })
+      .catch((error) => {
+        console.log('Erro ao salvar assinatura:', error)
+      })
   }
 
   return (

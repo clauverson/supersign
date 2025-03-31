@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation'
 import { DocumentService } from '@/services/documents'
 import moment from 'moment'
 
-enum DocumentStatus {
+export enum DocumentStatus {
   PENDING = 'Pendente',
-  SIGNED = 'Conluído',
+  SIGNED = 'Concluído',
 }
 
 export default function DocumentList() {

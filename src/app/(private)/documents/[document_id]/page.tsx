@@ -6,10 +6,12 @@ import { useModal } from '@/hooks/modal.store'
 import { DocumentService } from '@/services/documents'
 import { useQuery } from '@tanstack/react-query'
 import { Download, Trash2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 
 export default function DocumentDetails() {
+  const { data: session } = useSession()
   const { document_id } = useParams()
   const { isOpen, toggleModal } = useModal()
 
@@ -49,11 +51,16 @@ export default function DocumentDetails() {
           <button
             className={twMerge(
               'bg-green-300 rounded-full p-2 px-4 text-green-800 font-bold',
-              'cursor-pointer hover:bg-green-400 hover:text-green-900 transition-colors duration-200'
+              'cursor-pointer hover:bg-green-400 hover:text-green-900 transition-colors duration-200',
+              document?.data.status === 'SIGNED' &&
+                'cursor-not-allowed bg-gray-100 text-gray-500 hover:bg-gray-100 hover:text-gray-500'
             )}
+            disabled={document?.data.status === 'SIGNED'}
             onClick={toggleModal}
           >
-            Assinar Documento
+            {document?.data.status === 'SIGNED'
+              ? 'Documento Assinado'
+              : 'Assinar Documento'}
           </button>
 
           <button className="flex items-center gap-2 ml-2 cursor-pointer">
@@ -66,9 +73,9 @@ export default function DocumentDetails() {
         </aside>
       </div>
 
-      {isOpen && (
+      {isOpen && session?.user.email && typeof document_id === 'string' && (
         <Modal title={'Sua assinatura'}>
-          <MySignaturePad />
+          <MySignaturePad email={session.user.email} documentId={document_id} />
         </Modal>
       )}
     </section>
