@@ -70,6 +70,20 @@ export default function LoginPage() {
           </button>
         </footer>
       </form>
+
+      <hr className="border-gray-300 my-10" />
+
+      <div className="mt-4 text-center">
+        <p>
+          Não tem uma conta?{' '}
+          <a
+            href="/register"
+            className="text-teal-700 hover:text-teal-800 font-medium"
+          >
+            Crie uma conta
+          </a>
+        </p>
+      </div>
     </div>
   )
 }

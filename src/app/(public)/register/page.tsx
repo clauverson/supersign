@@ -82,6 +82,20 @@ export default function RegisterPage() {
           </button>
         </footer>
       </form>
+
+      <hr className="border-gray-300 my-10" />
+
+      <div className="mt-4 text-center">
+        <p>
+          Já tem uma conta?{' '}
+          <a
+            href="/login"
+            className="text-teal-700 hover:text-teal-800 font-medium"
+          >
+            Faça login
+          </a>
+        </p>
+      </div>
     </div>
   )
 }
