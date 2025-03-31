@@ -7,6 +7,7 @@ import { Eraser, Mail, Signature, User } from 'lucide-react'
 import { twMerge } from 'tailwind-merge'
 import { DocumentService } from '@/services/documents'
 import { useModal } from '@/hooks/modal.store'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   readonly email: string
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function MySignaturePad(props: Props) {
+  const router = useRouter()
   const sigCanvas = useRef<SignatureCanvas>(null)
   const { data: session } = useSession()
   const { toggleModal } = useModal()
@@ -27,6 +29,8 @@ export function MySignaturePad(props: Props) {
       .then(() => {
         sigCanvas.current?.clear()
         toggleModal()
+        alert('Assinatura salva com sucesso!')
+        router.push('/documents/all')
       })
       .catch((error) => {
         console.log('Erro ao salvar assinatura:', error)

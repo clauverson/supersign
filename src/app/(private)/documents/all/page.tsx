@@ -87,6 +87,13 @@ export default function DocumentList() {
           <p>{moment(doc.updatedAt).format('DD/MM/YYYY')}</p>
         </a>
       ))}
+
+      {documents?.data.length === 0 && (
+        <p className="text-center text-gray-400">
+          Você ainda não possui documentos cadastrados. Clique no botão acima
+          para adicionar um novo.
+        </p>
+      )}
     </div>
   )
 }
