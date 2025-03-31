@@ -1,69 +1,86 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useFormik } from 'formik'
+import { Input } from '@/components/ui/Input'
+import { Label } from '@/components/ui/Label'
+import { twMerge } from 'tailwind-merge'
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const router = useRouter()
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+  const form = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
+    onSubmit: async (values) => {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      })
 
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
+      if (!res.ok) {
+        const data = await res.json()
+        alert(data.message || 'Erro ao registrar')
+        return
+      }
 
-    if (!res.ok) {
-      const data = await res.json()
-      setError(data.message || 'Erro ao registrar')
-      setLoading(false)
-      return
-    }
-
-    router.push('/login')
-  }
+      router.push('/login')
+    },
+  })
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-lg">
-      <h2 className="text-xl font-bold mb-4">Cadastro</h2>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="max-w-md mx-auto mt-14 p-6">
+      <h2 className="text-2xl font-medium mb-4">Crie uma conta</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Nome"
-          className="w-full p-2 border rounded"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          className="w-full p-2 border rounded"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
-          disabled={loading}
-        >
-          {loading ? 'Cadastrando...' : 'Cadastrar'}
-        </button>
+      <form onSubmit={form.handleSubmit} className="space-y-4">
+        <div>
+          <Label>Nome</Label>
+          <Input
+            placeholder="Informe seu nome"
+            name="name"
+            value={form.values.name}
+            onChange={form.handleChange}
+          />
+        </div>
+
+        <div>
+          <Label>Email</Label>
+          <Input
+            type="email"
+            placeholder="Seu melhor email"
+            name="email"
+            value={form.values.email}
+            onChange={form.handleChange}
+          />
+        </div>
+
+        <div>
+          <Label>Senha</Label>
+          <Input
+            type="password"
+            placeholder="Escolha sua senha"
+            name="password"
+            value={form.values.password}
+            onChange={form.handleChange}
+          />
+        </div>
+
+        <footer className="mt-10">
+          <button
+            type="submit"
+            className={twMerge(
+              'w-full bg-teal-700 text-white p-2 rounded-md font-medium cursor-pointer ',
+              'hover:bg-teal-800 transition-colors duration-200'
+            )}
+            disabled={form.isSubmitting}
+          >
+            {form.isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+          </button>
+        </footer>
       </form>
     </div>
   )
