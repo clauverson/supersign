@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import Logo from '../../../public/logo.svg'
 import { Bell } from 'lucide-react'
 import { DropdownMenu } from '@/components/ui/DropdownMenu'
+import { Alert } from '@/components/ui/Alert'
 
 export default function RootLayout({
   children,
@@ -52,7 +53,10 @@ export default function RootLayout({
           </nav>
         </aside>
 
-        <main>{children}</main>
+        <main className="grid">
+          <Alert />
+          {children}
+        </main>
       </div>
 
       <footer></footer>

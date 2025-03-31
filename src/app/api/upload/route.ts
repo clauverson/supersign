@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { writeFile } from 'fs/promises'
+import { mkdir, writeFile } from 'fs/promises'
 import path from 'path'
 import { PrismaClient } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid'
@@ -10,26 +10,41 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File
-    const userId = formData.get('userId') as string
+    const email = formData.get('email') as string
 
-    if (!file || !userId) {
+    if (!file || !email) {
       return NextResponse.json(
-        { error: 'Arquivo ou userId não informado' },
+        { error: 'Arquivo ou email não informado' },
         { status: 400 }
       )
     }
 
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Usuário não encontrado' },
+        { status: 404 }
+      )
+    }
+
     const fileKey = uuidv4()
+    const fileName = file.name
+    const fileExtension = path.extname(fileName)
+
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const filePath = path.join(process.cwd(), 'public/uploads', fileKey)
+
+    const uploadDir = path.join(process.cwd(), 'public/uploads')
+    await mkdir(uploadDir, { recursive: true })
+
+    const filePath = path.join(uploadDir, `${fileKey}${fileExtension}`)
     await writeFile(filePath, buffer)
 
     const document = await prisma.document.create({
       data: {
         name: file.name,
         fileKey,
-        userId,
+        userId: user.id,
         status: 'PENDING',
       },
     })

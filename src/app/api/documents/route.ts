@@ -5,10 +5,8 @@ import { authOptions, prisma } from '../auth/[...nextauth]/route'
 export async function GET() {
   try {
     const session = (await getServerSession(authOptions)) as {
-      user: { id: string }
+      user: { id: string; email: string }
     } | null
-
-    console.log(session, 'SESSION')
 
     if (!session) {
       return NextResponse.json(
@@ -17,10 +15,19 @@ export async function GET() {
       )
     }
 
-    const userId = session.user.id
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Usuário não encontrado' },
+        { status: 404 }
+      )
+    }
 
     const documents = await prisma.document.findMany({
-      where: { userId },
+      where: { userId: user.id },
     })
 
     return NextResponse.json(documents)
