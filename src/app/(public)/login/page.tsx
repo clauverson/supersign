@@ -3,59 +3,71 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/Input'
+import { Label } from '@/components/ui/Label'
+import { useFormik } from 'formik'
+import { twMerge } from 'tailwind-merge'
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const router = useRouter()
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+  const form = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit: async (values) => {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      })
 
-    const res = await signIn('credentials', {
-      redirect: false,
-      email: form.email,
-      password: form.password,
-    })
+      if (res?.error) {
+        return
+      }
 
-    if (res?.error) {
-      setError('E-mail ou senha incorretos.')
-      setLoading(false)
-      return
-    }
-
-    router.push('/documents/all')
-  }
+      router.push('/documents/all')
+    },
+  })
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-lg">
+    <div className="max-w-md mx-auto mt-10 p-6">
       <h2 className="text-xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          className="w-full p-2 border rounded"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
-          disabled={loading}
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
+
+      <form onSubmit={form.handleSubmit} className="space-y-4">
+        <div>
+          <Label>Email</Label>
+          <Input
+            type="email"
+            placeholder="Informe seu email"
+            value={form.values.email}
+            onChange={form.handleChange}
+          />
+        </div>
+
+        <div>
+          <Label>Senha</Label>
+          <Input
+            type="password"
+            placeholder="Digite sua senha"
+            value={form.values.password}
+            onChange={form.handleChange}
+          />
+        </div>
+
+        <footer className="mt-10">
+          <button
+            type="submit"
+            className={twMerge(
+              'w-full bg-teal-700 text-white p-2 rounded-md font-medium cursor-pointer ',
+              'hover:bg-teal-800 transition-colors duration-200'
+            )}
+            disabled={form.isSubmitting}
+          >
+            {form.isSubmitting ? 'Entrando...' : 'Entrar'}
+          </button>
+        </footer>
       </form>
     </div>
   )
