@@ -28,8 +28,7 @@ export async function POST(req: Request) {
     }
 
     const fileKey = uuidv4()
-    const fileName = file.name
-    const fileExtension = path.extname(fileName)
+    const fileExtension = path.extname(file.name)
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)

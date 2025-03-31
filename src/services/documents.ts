@@ -27,9 +27,14 @@ function saveSignature(documentId: string, email: string, signature: string) {
   })
 }
 
+function deleteDocument(document_id: string) {
+  return axios.delete(`/api/documents/${document_id}`)
+}
+
 export const DocumentService = {
   getDocuments,
   uploadFile,
   getDocumentById,
   saveSignature,
+  deleteDocument,
 }

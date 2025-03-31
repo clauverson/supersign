@@ -7,11 +7,12 @@ import { DocumentService } from '@/services/documents'
 import { useQuery } from '@tanstack/react-query'
 import { Download, Trash2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 
 export default function DocumentDetails() {
   const { data: session } = useSession()
+  const router = useRouter()
   const { document_id } = useParams()
   const { isOpen, toggleModal } = useModal()
 
@@ -23,6 +24,20 @@ export default function DocumentDetails() {
         : undefined,
     enabled: !!document_id,
   })
+
+  function deleteDocument() {
+    if (typeof document_id === 'string') {
+      DocumentService.deleteDocument(document_id)
+        .then(() => {
+          alert('Documento excluído com sucesso')
+          router.push('/documents/all')
+        })
+        .catch((error) => {
+          console.error('Erro ao excluir documento:', error)
+          alert('Erro ao excluir documento')
+        })
+    }
+  }
 
   return (
     <section className="container mx-auto p-8">
@@ -71,7 +86,10 @@ export default function DocumentDetails() {
             <Download size={18} /> Download
           </a>
 
-          <button className="flex items-center gap-2 text-rose-600 ml-2 cursor-pointer">
+          <button
+            className="flex items-center gap-2 text-rose-600 ml-2 cursor-pointer"
+            onClick={deleteDocument}
+          >
             <Trash2 size={18} /> Excluir
           </button>
         </aside>
