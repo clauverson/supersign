@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
     await prisma.document.update({
       where: { id: documentId },
-      data: { status: 'SIGNED' },
+      data: { status: 'SIGNED', updatedAt: new Date() },
     })
 
     return NextResponse.json({

@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useQuery } from '@tanstack/react-query'
-import { ClipboardPen } from 'lucide-react'
+import { ClipboardPen, FileText } from 'lucide-react'
 import { twMerge } from 'tailwind-merge'
 import { useRouter } from 'next/navigation'
 import { DocumentService } from '@/services/documents'
@@ -81,10 +81,15 @@ export default function DocumentList() {
           )}
           href={`/documents/${doc.id}`}
         >
-          <p>{doc.name}</p>
+          <p className="flex items-center gap-2">
+            <FileText className="text-gray-400" size={20} />
+            {doc.name}
+          </p>
           <p>{DocumentStatus[doc.status] || doc.status}</p>
           <p>{moment(doc.createdAt).format('DD/MM/YYYY')}</p>
-          <p>{moment(doc.updatedAt).format('DD/MM/YYYY')}</p>
+          <p title={moment(doc.updatedAt).format('DD/MM/YYYY HH:mm')}>
+            {moment(doc.updatedAt).fromNow()}
+          </p>
         </a>
       ))}
 
