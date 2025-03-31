@@ -63,9 +63,13 @@ export default function DocumentDetails() {
               : 'Assinar Documento'}
           </button>
 
-          <button className="flex items-center gap-2 ml-2 cursor-pointer">
+          <a
+            className="flex items-center gap-2 ml-2 cursor-pointer"
+            href={`/uploads/${document?.data.fileKey}.pdf`}
+            download="SuperSignDocument.pdf"
+          >
             <Download size={18} /> Download
-          </button>
+          </a>
 
           <button className="flex items-center gap-2 text-rose-600 ml-2 cursor-pointer">
             <Trash2 size={18} /> Excluir

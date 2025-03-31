@@ -1,15 +1,19 @@
+'use client'
+
 import Image from 'next/image'
 import { twMerge } from 'tailwind-merge'
 import Logo from '../../../public/logo.svg'
 import { Bell } from 'lucide-react'
 import { DropdownMenu } from '@/components/ui/DropdownMenu'
 import { Alert } from '@/components/ui/Alert'
+import { useRouter } from 'next/navigation'
 
 export default function RootLayout({
   children,
 }: {
   readonly children: React.ReactNode
 }) {
+  const router = useRouter()
   return (
     <section>
       <header
@@ -24,6 +28,7 @@ export default function RootLayout({
           alt={''}
           className="cursor-pointer"
           height={30}
+          onClick={() => router.push('/documents/all')}
         />
 
         <div className="flex items-center gap-4">

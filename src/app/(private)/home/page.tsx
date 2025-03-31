@@ -1,8 +1,7 @@
 export default function PrivatePage() {
   return (
-    <div>
-      <h1>TestSign</h1>
-      <p>teste</p>
+    <div className="container mx-auto p-8">
+      <h1 className="text-xl font-bold">Dashboard (em desenvolvimento)</h1>
     </div>
   )
 }
